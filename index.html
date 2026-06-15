@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bonnie & Mie</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #f7f3ee;
+    --cream-dark: #ede7de;
+    --terra: #b87a5a;
+    --terra-light: #d4a98a;
+    --text: #2c2a24;
+    --muted: #7a6a5a;
+    --border: #ddd0c0;
+    --border-light: #ede4d8;
+    --white: #ffffff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 72px 24px 56px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--terra);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(42px, 8vw, 72px);
+    font-weight: 300;
+    letter-spacing: 0.14em;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  .hero-sub {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .hero-line {
+    width: 40px;
+    height: 1px;
+    background: var(--terra);
+    margin: 24px auto 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-inner {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    max-width: 900px;
+    margin: 0 auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 16px 24px;
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active { color: var(--text); border-bottom-color: var(--terra); }
+
+  /* ── SECTIONS ── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--terra);
+    margin-bottom: 8px;
+  }
+  .section-desc {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  /* ── PHOTO GRID ── */
+  .photo-grid {
+    display: grid;
+    gap: 3px;
+    margin-bottom: 52px;
+  }
+  .photo-grid.g3 { grid-template-columns: repeat(3, 1fr); }
+  .photo-grid.g2 { grid-template-columns: repeat(2, 1fr); }
+  .photo-grid.g4 { grid-template-columns: repeat(4, 1fr); }
+  .photo-grid.mixed {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+  }
+  .photo-cell {
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--cream-dark);
+  }
+  .photo-cell.tall {
+    grid-row: span 2;
+    aspect-ratio: auto;
+  }
+  .photo-cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .photo-cell:hover img { transform: scale(1.04); }
+
+  /* placeholder when no img */
+  .photo-cell.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* ── MENU ITEMS ── */
+  .menu-list { border-top: 1px solid var(--border); }
+
+  .menu-item {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .menu-item-left { flex: 1; min-width: 0; }
+  .item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+  .item-sub {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .item-note {
+    font-size: 11px;
+    color: var(--terra);
+    margin-top: 3px;
+    font-style: italic;
+  }
+  .item-price {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--terra);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── FLAVOR TAGS ── */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+  }
+  .tag {
+    font-size: 10px;
+    padding: 3px 10px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    background: var(--white);
+  }
+
+  /* ── NOTICE ── */
+  .notice {
+    display: inline-block;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  /* ── SANDWICH GRID ── */
+  .sandwich-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border-light);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .sc {
+    background: var(--white);
+    padding: 12px 14px;
+  }
+  .sc.full { grid-column: 1 / -1; }
+  .sc-num {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--terra);
+    letter-spacing: 0.12em;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .sc-name { font-size: 13px; color: var(--text); line-height: 1.4; }
+
+  /* ── PRICE BANNER ── */
+  .price-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 18px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 20px;
+  }
+  .price-banner-label { font-size: 12px; color: var(--muted); }
+  .price-banner-price { font-size: 18px; font-weight: 500; color: var(--terra); }
+
+  /* ── FLAVOR LIST ── */
+  .flavor-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+  }
+  .flavor-box-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 12px;
+  }
+  .flavor-list { list-style: none; }
+  .flavor-list li {
+    padding: 8px 0 8px 14px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+    position: relative;
+  }
+  .flavor-list li:last-child { border-bottom: none; }
+  .flavor-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--terra-light);
+  }
+  .extra { color: var(--terra); font-style: italic; }
+
+  /* ── BASE BOX ── */
+  .base-box {
+    display: inline-flex;
+    gap: 24px;
+    padding: 12px 18px;
+    background: var(--cream-dark);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .base-box strong { color: var(--text); }
+
+  /* ── CAKE GRID (6 photos) ── */
+  .cake-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+    margin-bottom: 40px;
+  }
+  .cake-grid .photo-cell { aspect-ratio: 3/4; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 40px 24px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  footer .footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 600px) {
+    .photo-grid.g3 { grid-template-columns: repeat(2, 1fr); }
+    .cake-grid { grid-template-columns: repeat(2, 1fr); }
+    .sandwich-grid { grid-template-columns: 1fr; }
+    .sc.full { grid-column: 1; }
+    .nav-btn { padding: 14px 16px; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="hero-eyebrow">Fait maison · Bruxelles</p>
+  <h1>Bonnie &amp; Mie</h1>
+  <p class="hero-sub">Pâtisserie &amp; Traiteur</p>
+  <div class="hero-line"></div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="show('sucre',this)">Sucré</button>
+    <button class="nav-btn" onclick="show('sale',this)">Salé</button>
+    <button class="nav-btn" onclick="show('pains',this)">Pains garnis</button>
+    <button class="nav-btn" onclick="show('cakes',this)">Gâteaux</button>
+  </div>
+</nav>
+
+<!-- ══ SUCRÉ ══ -->
+<section class="section active" id="sucre">
+  <div class="section-wrap">
+    <h2 class="section-title">Mignardises sucrées</h2>
+    <p class="section-desc">Fait maison avec amour</p>
+
+    <div class="photo-grid g3">
+      <div class="photo-cell"><img src="images/brownies.jpg" alt="Brownies"></div>
+      <div class="photo-cell"><img src="images/tiramisu.jpg" alt="Tiramisu"></div>
+      <div class="photo-cell"><img src="images/cupcakes.jpg" alt="Cupcakes"></div>
+    </div>
+
+    <div class="menu-list">
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <div class="item-name">Brownies + ganache</div>
+          <div class="item-sub">15 carrés</div>
+          <div class="item-note">Avec fruits rouges : 45 €</div>
+        </div>
+        <div class="item-price">40 €</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <div class="item-name">Brownies nature</div>
+          <div class="item-sub">15 carrés</div>
+        </div>
+        <div class="item-price">27 €</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <div class="item-name">Tiramisu individuel</div>
+          <div class="item-sub">Boudoir ou spéculoos</div>
+          <div class="item-note">Grand format : 4,50 €</div>
+        </div>
+        <div class="item-price">4 €</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <div class="item-name">Cupcakes</div>
+          <div class="item-sub">Par 6</div>
+          <div class="tags">
+            <span class="tag">spéculoos</span><span class="tag">fruits rouges</span>
+            <span class="tag">myrtilles-citron</span><span class="tag">nutella</span>
+            <span class="tag">citron-meringue</span><span class="tag">caramel-cacahuètes</span>
+            <span class="tag">mangue-coco</span>
+          </div>
+        </div>
+        <div class="item-price">4,50 €</div>
+      </div>
+    </div>
+
+    <div class="photo-grid g3" style="margin-top:48px">
+      <div class="photo-cell"><img src="images/cookies.jpg" alt="Cookies"></div>
+      <div class="photo-cell"><img src="images/creme_brulee.jpg" alt="Crème brûlée"></div>
+      <div class="photo-cell"><img src="images/crepes.jpg" alt="Mini crêpes"></div>
+    </div>
+
+    <div class="menu-list">
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <div class="item-name">Cookies</div>
+          <div class="tags">
+            <span class="tag">simple</span><span class="tag">nutella &amp; pistache</span>
+            <span class="tag">praliné noisettes</span><span class="tag">myrtilles &amp; curd citron</span>
+            <span class="tag">framboises</span>
+          </div>
+        </div>
+        <div class="item-price">4,50 – 4,80 €</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <div class="item-name">Crème brûlée</div>
+          <div class="item-sub">Format verrine ou ramequin</div>
+        </div>
+        <div class="item-price">sur demande</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <div class="item-name">Panna cotta frutti di bosco</div>
+        </div>
+        <div class="item-price">sur demande</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <div class="item-name">Mini crêpes</div>
+          <div class="item-sub">Minimum 40 pièces</div>
+        </div>
+        <div class="item-price">1,20 € / pièce</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SALÉ ══ -->
+<section class="section" id="sale">
+  <div class="section-wrap">
+    <h2 class="section-title">Mignardises salées</h2>
+    <p class="section-desc">Cocktails &amp; réceptions</p>
+
+    <div class="photo-grid g3">
+      <div class="photo-cell"><img src="images/sale_buffet.jpg" alt="Buffet salé"></div>
+      <div class="photo-cell"><img src="images/sale_poulet.jpg" alt="Verrine poulet"></div>
+      <div class="photo-cell"><img src="images/sale_wraps.jpg" alt="Wraps"></div>
+    </div>
+
+    <span class="notice">Prix à la pièce · minimum 20 pièces par article</span>
+
+    <div class="menu-list">
+      <div class="menu-item">
+        <div class="menu-item-left"><div class="item-name">Wraps poulet</div></div>
+        <div class="item-price">2,90 €</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <div class="item-name">Verrine couscous perlé</div>
+          <div class="item-sub">Champignons &amp; chorizo · ou aux légumes</div>
+        </div>
+        <div class="item-price">2,70 €</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left"><div class="item-name">Mini burger de bœuf</div></div>
+        <div class="item-price">2,90 €</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <div class="item-name">Toast fromage frais</div>
+          <div class="item-sub">Jambon de parme, figue &amp; ciboulette</div>
+        </div>
+        <div class="item-price">2,20 €</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left"><div class="item-name">Verrine pâtes au pesto</div></div>
+        <div class="item-price">2,70 €</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <div class="item-name">Verrine poulet karaage</div>
+          <div class="item-sub">Sauce spicy</div>
+        </div>
+        <div class="item-price">2,50 €</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left"><div class="item-name">Verrine poulet crousty</div></div>
+        <div class="item-price">2,90 €</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-item-left"><div class="item-name">Burger végétarien</div></div>
+        <div class="item-price">2,90 €</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PAINS GARNIS ══ -->
+<section class="section" id="pains">
+  <div class="section-wrap">
+    <h2 class="section-title">Pains garnis</h2>
+    <p class="section-desc">Pistolet multigrains · blanc · mini sandwich mou</p>
+
+    <div class="photo-grid g3">
+      <div class="photo-cell"><img src="images/pains1.jpg" alt="Pains saumon"></div>
+      <div class="photo-cell"><img src="images/pains2.jpg" alt="Buffet pains"></div>
+      <div class="photo-cell"><img src="images/pains3.jpg" alt="Pistolets"></div>
+    </div>
+
+    <div class="price-banner">
+      <span class="price-banner-label">Prix unique toutes garnitures</span>
+      <span class="price-banner-price">2,90 € / pièce</span>
+    </div>
+
+    <div class="sandwich-grid">
+      <div class="sc"><span class="sc-num">01</span><span class="sc-name">Américain préparé + crudités</span></div>
+      <div class="sc"><span class="sc-num">02</span><span class="sc-name">Jambon + fromage + mayo + crudités</span></div>
+      <div class="sc"><span class="sc-num">03</span><span class="sc-name">Fromage + mayo + crudités</span></div>
+      <div class="sc"><span class="sc-num">04</span><span class="sc-name">Jambon + mayo + crudités</span></div>
+      <div class="sc"><span class="sc-num">05</span><span class="sc-name">Fromage frais + saumon + concombre + aneth</span></div>
+      <div class="sc"><span class="sc-num">06</span><span class="sc-name">Pesto + tomates + mozza + basilic</span></div>
+      <div class="sc"><span class="sc-num">07</span><span class="sc-name">Houmous + tomates séchées + oignons rouges + roquette</span></div>
+      <div class="sc"><span class="sc-num">08</span><span class="sc-name">Thon mayo + crudités</span></div>
+      <div class="sc"><span class="sc-num">09</span><span class="sc-name">Camembert + noix + roquette + sirop de liège</span></div>
+      <div class="sc"><span class="sc-num">10</span><span class="sc-name">Filet de dinde + mayo + oignons rouges + salade</span></div>
+      <div class="sc full"><span class="sc-num">11</span><span class="sc-name">Fromage frais fines herbes + concombre ou radis + oignons rouges</span></div>
+    </div>
+    <p style="font-size:12px; color:var(--muted); text-align:center; margin-top:8px;">D'autres idées ? On s'adapte avec plaisir ✨</p>
+  </div>
+</section>
+
+<!-- ══ GÂTEAUX ══ -->
+<section class="section" id="cakes">
+  <div class="section-wrap">
+    <h2 class="section-title">Layer cake</h2>
+    <p class="section-desc">Sur commande · personnalisé</p>
+
+    <div class="cake-grid">
+      <div class="photo-cell"><img src="images/cake1.jpg" alt="Layer cake"></div>
+      <div class="photo-cell"><img src="images/cake2.jpg" alt="Layer cake"></div>
+      <div class="photo-cell"><img src="images/cake3.jpg" alt="Layer cake"></div>
+      <div class="photo-cell"><img src="images/cake4.jpg" alt="Layer cake"></div>
+      <div class="photo-cell"><img src="images/cake5.jpg" alt="Layer cake"></div>
+      <div class="photo-cell"><img src="images/cake6.jpg" alt="Layer cake"></div>
+    </div>
+
+    <div class="menu-item" style="border-top:1px solid var(--border)">
+      <div class="menu-item-left">
+        <div class="item-name">Layer cake personnalisé</div>
+        <div class="item-sub">Minimum 12 personnes · décoration sur mesure</div>
+      </div>
+      <div class="item-price">5,50 € / part</div>
+    </div>
+
+    <div class="base-box" style="margin-top:16px">
+      <span><strong>Base :</strong> vanille ou chocolat</span>
+      <span><strong>Fourrage :</strong> au choix ci-dessous</span>
+    </div>
+
+    <div class="flavor-box">
+      <div class="flavor-box-label">Fourrages disponibles</div>
+      <ul class="flavor-list">
+        <li>Chantilly mascarpone + curd framboises + morceaux de framboises</li>
+        <li>Cacahuètes salées + caramel beurre salé + ganache chocolat lait</li>
+        <li>Fraises + chantilly mascarpone ou ganache au choix <span class="extra">(+5 € en été)</span></li>
+        <li>Pommes caramélisées cannelles + chantilly mascarpone ou ganache chocolat blanc</li>
+        <li>Poires croquantes + ganache chocolat blanc</li>
+        <li>Ganache chocolat lait + croustillant chocolat</li>
+        <li>Ganache spéculoos + pâte &amp; morceaux de spéculoos</li>
+        <li>Framboises + ganache chocolat lait + curd framboises</li>
+        <li>Ganache chocolat lait + praliné noisettes + croquant noisettes <span class="extra">(+5 €)</span></li>
+        <li>Mangues + curd mangue + flocons de coco</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title" style="margin-top:56px">Number cake</h2>
+    <p class="section-desc">Sur commande</p>
+
+    <div class="photo-grid g3">
+      <div class="photo-cell"><img src="images/number1.jpg" alt="Number cake"></div>
+      <div class="photo-cell"><img src="images/number2.jpg" alt="Number cake"></div>
+      <div class="photo-cell"><img src="images/number3.jpg" alt="Number cake"></div>
+    </div>
+
+    <div class="menu-item" style="border-top:1px solid var(--border)">
+      <div class="menu-item-left">
+        <div class="item-name">Number cake</div>
+        <div class="item-sub">1 chiffre ≈ 10 parts</div>
+        <div class="tags">
+          <span class="tag">fruits rouges</span>
+          <span class="tag">spéculoos</span>
+          <span class="tag">chocolat</span>
+          <span class="tag">mangue-coco</span>
+        </div>
+      </div>
+      <div class="item-price">60 € / chiffre</div>
+    </div>
+    <p style="font-size:11px; color:var(--muted); margin-top:12px; font-style:italic;">Décoration personnalisée en option · tarif sur demande</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">Bonnie &amp; Mie</div>
+  <p>Fait avec amour · Bruxelles</p>
+</footer>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: document.querySelector('nav').offsetTop, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
